@@ -14,17 +14,27 @@ typedef struct {
     double dt;
 } Params;
 
+//we want to pull s.vz rate of z, and p.g rate of vz so rk4 can ask;
+    //what are the rates at this state? four times 
+    //use another struct for this
+typedef struct {
+    double dz;  //how fast z is changing    
+    double dvz; //how fast vz is changing
+} StateDot;
+
+//forward decleration of statedot dunction
+StateDot derivatives(const State s, const Params p)
+{
+    StateDot out;
+    out.dz  = s.vz;
+    out. dvz = p.g;
+    return out;
+}
+
 //explicit euler method applied to free fall, scope: vertical only, const g, no thrust no change in mass
 int main(void)
 {
-    //starting values t, z, vz, g, dt
-    // double g = -9.81;
-    // double t = 0.0;
     double z0 = 100.0;   //m
-    // double z = 100.0;
-    // double vz = 0.0;
-    // double dt = 0.01;
-    //become two lines that create the bundles filled in order
     State s = { 0.0, 100.0, 0.0};
     Params p = {-9.81, 0.01};
     printf("%f %f %f \n", s.t, s.z, s.vz);
@@ -33,16 +43,13 @@ int main(void)
 
     // loop while lander is above the ground
     while(s.z > 0){
-        s.z = s.z + s.vz * p.dt;
-        s.vz = s.vz + p.g*p.dt;         //z and vz are loose variables
-
+        StateDot d = derivatives(s, p);
+        s.z = s.z + d.dz * p.dt;
+        s.vz = s.vz + d.dvz*p.dt;         //z and vz are loose variables
         //we can bundle loose vars into a struct with a name change
         //bundling loose vars into struct to prep for rk4, and in C the clean way to 
         //return a bundle of numbers is with a struct
         s.t = s.t + p.dt;
-
-        //bundled
-        
 
         double height_exact = z0 + 0.5 * p.g * s.t * s.t;
         double computed_gap = fabs(s.z - height_exact);   //where fabs() returns abs value of float
