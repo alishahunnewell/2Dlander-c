@@ -31,6 +31,16 @@ StateDot derivatives(const State s, const Params p)
     return out;
 }
 
+State step_euler(State s, Params p)
+{
+    StateDot d =  derivatives(s, p);
+    s.z = s.z + d.dz * p.dt;
+    s.vz = s.vz + d.dvz*p.dt; 
+    s.t = s.t + p.dt;
+    return s;
+
+}
+
 //explicit euler method applied to free fall, scope: vertical only, const g, no thrust no change in mass
 int main(void)
 {
@@ -43,13 +53,7 @@ int main(void)
 
     // loop while lander is above the ground
     while(s.z > 0){
-        StateDot d = derivatives(s, p);
-        s.z = s.z + d.dz * p.dt;
-        s.vz = s.vz + d.dvz*p.dt;         //z and vz are loose variables
-        //we can bundle loose vars into a struct with a name change
-        //bundling loose vars into struct to prep for rk4, and in C the clean way to 
-        //return a bundle of numbers is with a struct
-        s.t = s.t + p.dt;
+        s = step_euler(s, p);
 
         double height_exact = z0 + 0.5 * p.g * s.t * s.t;
         double computed_gap = fabs(s.z - height_exact);   //where fabs() returns abs value of float
