@@ -1,28 +1,9 @@
 #include <stdio.h>
 #include <math.h>
+#include "state.h"
+#include "params.h"
 
-//state struct
-typedef struct{
-    double t;
-    double z;
-    double vz;
-} State;
 
-//params struct 
-typedef struct {
-    double g;
-    double dt;
-} Params;
-
-//we want to pull s.vz rate of z, and p.g rate of vz so rk4 can ask;
-    //what are the rates at this state? four times 
-    //use another struct for this
-typedef struct {
-    double dz;  //how fast z is changing    
-    double dvz; //how fast vz is changing
-} StateDot;
-
-//forward decleration of statedot dunction
 StateDot derivatives(const State s, const Params p)
 {
     StateDot out;
