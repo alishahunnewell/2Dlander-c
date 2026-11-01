@@ -2,15 +2,7 @@
 #include <math.h>
 #include "state.h"
 #include "params.h"
-
-
-StateDot derivatives(const State s, const Params p)
-{
-    StateDot out;
-    out.dz  = s.vz;
-    out. dvz = p.g;
-    return out;
-}
+#include "dynamics.h"
 
 State step_euler(State s, Params p)
 {
