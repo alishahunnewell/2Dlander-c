@@ -9,8 +9,8 @@
 int main(void)
 {
     double z0 = 100.0;   //m
-    State s = { 0.0, 100.0, 0.0};
-    Params p = {-9.81, 0.01};
+    State s = { 0.0, 100.0, 0.0, 1000.0};
+    Params p = {-9.81, 0.01, 9.80665, 300.0, 20000.0};
     double max_error = 0.0;
 
     FILE *f = fopen("output/freefall.csv", "w");
