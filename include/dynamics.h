@@ -5,6 +5,6 @@
 #include "params.h"
 
 
-StateDot derivatives(const State s, const Params p);
+StateDot derivatives(const State s, const Control u,const Params p);
 
 #endif

@@ -15,4 +15,9 @@ typedef struct {
     double dm;
 } StateDot;
 
+typedef struct{
+    double Tx; //horizontal thrust 
+    double Tz; //vertical thrust 
+} Control;
+
 #endif

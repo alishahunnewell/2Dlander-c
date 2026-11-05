@@ -4,8 +4,8 @@
 #include "state.h"
 #include "params.h"
 
-State step_euler(State s, Params p);
-State step_rk4(State s, Params p);
+State step_euler(State s, Control u, Params p);
+State step_rk4(State s, Control u, Params p);
 
 
 #endif
