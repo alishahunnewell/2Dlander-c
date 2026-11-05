@@ -3,3 +3,4 @@
 output/
 main
 test_integrator
+.vscode/
