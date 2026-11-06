@@ -5,7 +5,7 @@ StateDot derivatives(const State s, const Control u,const Params p)
     StateDot out;
     out.dz  = s.vz;
     out. dvz = u.Tz / s.m + p.g; //updated body
-    out.dm = -u.Tz / (p.Isp * p.g0);  //no change in mass for now
+    out.dm = -sqrt(u.Tx * u.Tx + u.Tz * u.Tz) / (p.Isp * p.g0);
     return out;
 }
 //limits control so that abs(T) is less than equal to Tmax and Tz is less than or equal to 0
