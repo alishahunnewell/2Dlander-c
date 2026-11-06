@@ -4,3 +4,4 @@ output/
 main
 test_integrator
 .vscode/
+test_dynamics

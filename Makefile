@@ -12,8 +12,12 @@ main: src/main.c $(SRC)
 test_integrator: tests/test_integrator.c $(SRC)
 	$(CC) $(CFLAGS) -o test_integrator tests/test_integrator.c $(SRC) -lm
 
-test: test_integrator
+test_dynamics: tests/test_dynamics.c src/dynamics.c
+	$(CC) $(CFLAGS) -o test_dynamics tests/test_dynamics.c src/dynamics.c -lm
+
+test: test_integrator test_dynamics
 	./test_integrator
+	./test_dynamics
 
 clean:
-	rm -f main test_integrator
+	rm -f main test_integrator test_dynamics
