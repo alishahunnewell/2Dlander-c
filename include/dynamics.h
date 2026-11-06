@@ -6,5 +6,6 @@
 
 
 StateDot derivatives(const State s, const Control u,const Params p);
+void clamp_thrust(Control *u, const Params *p);
 
 #endif
