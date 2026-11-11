@@ -39,18 +39,41 @@ int main(void)
     fclose(f);
     printf("max error: %e\n", max_error);
 
-    //section 2:landing code 
-    //these are declerations so we use diff names from free fall vars
-    State ls = { 0.0, 100.0, 0.0, 1000.0};
     Params lp = {-9.81, 0.01, 9.80665, 300.0, 20000.0};
-    Gains k = {0.0, 0.0, 1.0, 2.0}; 
-    Control lu = {0.0, 0.0}; //no thrust
 
-    while (ls.z > 0.0 && ls.t < 60.0){
-        pd_control(&ls, &k, &lp, &lu);
+    Gains gains[3] = {
+    {0.0, 0.0, 1.0, 2.0},   // baseline
+    {0.0, 0.0, 1.0, 0.0},   // Kd = 0 (no damper)
+    {0.0, 0.0, 2.0, 2.0}    // Kp doubled
+    };
+    const char *files[3] = {
+    "output/landing_base.csv",
+    "output/landing_kd0.csv",
+    "output/landing_kp2.csv"
+    };
+
+    for (int i = 0; i < 3; i++) {
+    State ls = {0.0, 100.0, 0.0, 1000.0};
+    Control lu = {0.0, 0.0};
+
+    FILE *lf = fopen(files[i], "w");
+    if (lf == NULL) {
+        printf("could not open %s\n", files[i]);
+        return 1;
+    }
+    fprintf(lf, "t,z,vz,Tz\n");
+
+    while (ls.z > 0.0 && ls.t < 60.0) {
+        pd_control(&ls, &gains[i], &lp, &lu);
         clamp_thrust(&lu, &lp);
         ls = step_rk4(ls, lu, lp);
+        fprintf(lf, "%f,%f,%f,%f\n", ls.t, ls.z, ls.vz, lu.Tz);
     }
-    printf("touchdown: t=%f  z=%f  vz=%f  mass=%f\n", ls.t, ls.z, ls.vz, ls.m);
+
+    fclose(lf);
+    printf("run %d: t=%f  vz=%f\n", i, ls.t, ls.vz);
+    }
+    
+    
     return 0;
 }
