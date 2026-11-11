@@ -1,6 +1,6 @@
 #include "controller.h"
 
-void pd_controller(const State *s, const Gains *k, const Params *p, Control *out)
+void pd_control(const State *s, const Gains *k, const Params *p, Control *out)
 {
     double z_target = -1.0; //pd controller at 0 may never cross and loop may not end
 
