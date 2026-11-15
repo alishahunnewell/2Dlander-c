@@ -19,11 +19,11 @@ int main(void)
     assert(u.Tz >= 0.0);
 
     u = (Control){0.0, 10000.0};
-    StateDot d = derivatives((State){0.0, 100.0, 0.0, 1000.0}, u, p);
+    StateDot d = derivatives((State){0.0, 100.0, 0.0, 1000.0, 0.0, 0.0}, u, p);
     assert(d.dm < 0.0);
 
     //burn test 
-    State s = {0.0, 0.0, 0.0, 1000.0};
+    State s = {0.0, 0.0, 0.0, 1000.0, 0.0, 0.0};
     Params q = {0.0, 0.01, 9.80665, 300.0, 20000.0};
     Control burn = {0.0, 20000.0};
 

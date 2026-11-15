@@ -7,12 +7,16 @@ typedef struct{
     double z;
     double vz;
     double m;
+    double x;
+    double vx;
 } State;
 
 typedef struct {
     double dz;  //how fast z is changing    
     double dvz; //how fast vz is changing
     double dm;
+    double dx;
+    double dvx;
 } StateDot;
 
 typedef struct{

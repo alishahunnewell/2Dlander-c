@@ -11,7 +11,7 @@ int main(void)
 {
     //section 1:free fall code
     double z0 = 100.0;   //m
-    State s = { 0.0, 100.0, 0.0, 1000.0};
+    State s = { 0.0, 100.0, 0.0, 1000.0, 0.0, 0.0};
     Params p = {-9.81, 0.01, 9.80665, 300.0, 20000.0};
     Control u = {0.0, 0.0}; //no thrust
     double max_error = 0.0;
@@ -53,7 +53,7 @@ int main(void)
     };
 
     for (int i = 0; i < 3; i++) {
-    State ls = {0.0, 100.0, 0.0, 1000.0};
+    State ls = {0.0, 100.0, 0.0, 1000.0, 0.0, 0.0};
     Control lu = {0.0, 0.0};
 
     FILE *lf = fopen(files[i], "w");
