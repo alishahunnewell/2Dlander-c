@@ -10,6 +10,6 @@ void pd_control(const State *s, const Gains *k, const Params *p, Control *out)
     //gravity compensation
     a_cmd = a_cmd - p->g;
     out->Tz = s->m * a_cmd;
-    out->Tx = 0.0;
-    
+    double ax_cmd = k->kp_x * (0.0 - s->x) + k->kd_x * (0.0 - s->vx);
+    out->Tx = s->m * ax_cmd;    
 }

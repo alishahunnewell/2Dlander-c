@@ -42,7 +42,7 @@ int main(void)
     Params lp = {-9.81, 0.01, 9.80665, 300.0, 20000.0};
 
     Gains gains[3] = {
-    {0.0, 0.0, 1.0, 2.0},   // baseline
+    {0.5, 1.4, 1.0, 2.0},   // baseline
     {0.0, 0.0, 1.0, 0.0},   // Kd = 0 (no damper)
     {0.0, 0.0, 2.0, 2.0}    // Kp doubled
     };
@@ -53,7 +53,7 @@ int main(void)
     };
 
     for (int i = 0; i < 3; i++) {
-    State ls = {0.0, 100.0, 0.0, 1000.0, 0.0, 0.0};
+    State ls = {0.0, 100.0, 0.0, 1000.0, 30.0, 0.0};
     Control lu = {0.0, 0.0};
 
     FILE *lf = fopen(files[i], "w");
@@ -71,8 +71,8 @@ int main(void)
     }
 
     fclose(lf);
-    printf("run %d: t=%f  vz=%f\n", i, ls.t, ls.vz);
-    }
+    printf("run %d: t=%f  x=%f  vx=%f  vz=%f\n", i, ls.t, ls.x, ls.vx, ls.vz);
+}
     
     
     return 0;
