@@ -5,6 +5,7 @@
 #include "dynamics.h"
 #include "integrator.h"
 #include "controller.h"
+#include "metrics.h"
 
 //explicit euler method applied to free fall, scope: vertical only, const g, no thrust no change in mass
 int main(void)
@@ -12,7 +13,7 @@ int main(void)
     //section 1:free fall code
     double z0 = 100.0;   //m
     State s = { 0.0, 100.0, 0.0, 1000.0, 0.0, 0.0};
-    Params p = {-9.81, 0.01, 9.80665, 300.0, 20000.0};
+    Params p = {-9.81, 0.01, 9.80665, 300.0, 20000.0, 5.0};
     Control u = {0.0, 0.0}; //no thrust
     double max_error = 0.0;
 
@@ -39,7 +40,7 @@ int main(void)
     fclose(f);
     printf("max error: %e\n", max_error);
 
-    Params lp = {-9.81, 0.01, 9.80665, 300.0, 20000.0};
+    Params lp = {-9.81, 0.01, 9.80665, 300.0, 20000.0, 5.0};
 
     Gains gains[3] = {
     {0.5, 1.4, 1.0, 2.0},   // baseline
@@ -54,6 +55,7 @@ int main(void)
 
     for (int i = 0; i < 3; i++) {
     State ls = {0.0, 100.0, 0.0, 1000.0, 30.0, 0.0};
+    double m_start = ls.m;
     Control lu = {0.0, 0.0};
 
     FILE *lf = fopen(files[i], "w");
@@ -63,7 +65,7 @@ int main(void)
     }
     fprintf(lf, "t,z,vz,Tz\n");
 
-    while (ls.z > 0.0 && ls.t < 60.0) {
+    while (!has_touched_down(&ls) && ls.t < 60.0) {
         pd_control(&ls, &gains[i], &lp, &lu);
         clamp_thrust(&lu, &lp);
         ls = step_rk4(ls, lu, lp);
@@ -71,7 +73,10 @@ int main(void)
     }
 
     fclose(lf);
-    printf("run %d: t=%f  x=%f  vx=%f  vz=%f\n", i, ls.t, ls.x, ls.vx, ls.vz);
+    Result r;
+    evaluate_landing(&ls, m_start, &lp, &r);
+    printf("run %d: ", i);
+    print_result(&r);
 }
     
     

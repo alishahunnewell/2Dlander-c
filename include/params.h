@@ -8,6 +8,7 @@ typedef struct {
     double g0;
     double Isp;
     double Tmax;
+    double pad_radius;
 } Params;
 
 #endif

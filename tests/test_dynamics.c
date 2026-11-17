@@ -10,7 +10,7 @@
 int main(void)
 {
     Control u = {30000.0 , 40000.0};
-    Params p = {-9.81, 0.01, 9.80665, 300.0, 20000.0};
+    Params p = {-9.81, 0.01, 9.80665, 300.0, 20000.0, 5.0};
     clamp_thrust(&u, &p);
     assert((sqrt(u.Tx * u.Tx + u.Tz * u.Tz)) <= p.Tmax);
     
@@ -24,7 +24,7 @@ int main(void)
 
     //burn test 
     State s = {0.0, 0.0, 0.0, 1000.0, 0.0, 0.0};
-    Params q = {0.0, 0.01, 9.80665, 300.0, 20000.0};
+    Params q = {0.0, 0.01, 9.80665, 300.0, 20000.0, 5.0};
     Control burn = {0.0, 20000.0};
 
     double expected = 0.0; //variable decleration in outer scope so expected is alive outsid loop
