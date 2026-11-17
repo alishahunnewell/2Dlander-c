@@ -44,8 +44,8 @@ int main(void)
 
     Gains gains[3] = {
     {0.5, 1.4, 1.0, 2.0},   // baseline
-    {0.0, 0.0, 1.0, 0.0},   // Kd = 0 (no damper)
-    {0.0, 0.0, 2.0, 2.0}    // Kp doubled
+    {0.05, 0.0, 1.0, 2.0},   // weak horizontal spring no horiz damper
+    {0.0, 0.0, 1.0, 2.0}    // no horiz control at all
     };
     const char *files[3] = {
     "output/landing_base.csv",
