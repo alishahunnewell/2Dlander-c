@@ -6,6 +6,7 @@
 #include "integrator.h"
 #include "controller.h"
 #include "metrics.h"
+#include "sim.h"
 
 int main(void)
 {
@@ -63,34 +64,23 @@ int main(void)
         "output/landing_run2.csv"
     };
 
-
-    //one pass of this loop = one full landing 
+    //one pass of this loop = one full landing
     for (int i = 0; i < 3; i++) {
-        //starting state: 100 m up, 30 m off the pad, at rest
-        State ls = {0.0, 100.0, 0.0, 1000.0, 30.0, 0.0};
-        double m_start = ls.m;
-        Control lu = {0.0, 0.0};
+        //starting state, 100 m up, 30 m off pad and at rest
+        State start = {0.0, 100.0, 0.0, 1000.0, 30.0, 0.0};
 
-        //open this run's output file
+        //opening this run's output file
         FILE *lf = fopen(files[i], "w");
         if (lf == NULL) {
             printf("could not open %s\n", files[i]);
             return 1;
         }
-        fprintf(lf, "t,z,vz,Tz,x\n");
 
-        //fly : controller -> clamp -> integrate -> log
-        while (!has_touched_down(&ls) && ls.t < 60.0) {
-            pd_control(&ls, &gains[i], &lp, &lu);
-            clamp_thrust(&lu, &lp);
-            ls = step_rk4(ls, lu, lp);
-            fprintf(lf, "%f,%f,%f,%f,%f\n", ls.t, ls.z, ls.vz, lu.Tz, ls.x);
-        }
+        //fly landing and judge it
+        Result r;
+        run_landing(start, &gains[i], &lp, lf, &r);
         fclose(lf);
 
-        // judge the landing and print the verdict
-        Result r;
-        evaluate_landing(&ls, m_start, &lp, &r);
         printf("run %d: ", i);
         print_result(&r);
     }

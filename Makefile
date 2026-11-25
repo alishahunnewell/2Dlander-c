@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -std=c11 -Wall -Wextra -Werror -Iinclude
-SRC = src/dynamics.c src/integrator.c src/controller.c src/metrics.c src/rng.c
+SRC = src/dynamics.c src/integrator.c src/controller.c src/metrics.c src/rng.c src/sim.c
 
 .PHONY: all test clean
 
