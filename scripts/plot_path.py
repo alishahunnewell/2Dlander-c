@@ -8,7 +8,7 @@ runs = [
 ]
 
 for path, label in runs:
-    t, z, vz, Tz, x = np.loadtxt(path, delimiter=",", skiprows=1, unpack=True)
+    t, z, vz, Tz, x, Tx = np.loadtxt(path, delimiter=",", skiprows=1, unpack=True)
     plt.plot(x, z, label=label)
 
 plt.axhline(0, color="gray", linewidth=0.5)

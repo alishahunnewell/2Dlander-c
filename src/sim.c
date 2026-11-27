@@ -9,7 +9,7 @@ void run_landing(State start, const Gains *k, const Params *p, FILE *log, Result
     Control u = {0.0, 0.0};
 
     if (log != NULL){
-        fprintf(log, "t, z, vz, Tz, x\n");
+        fprintf(log, "t, z, vz, Tz, x, Tx\n");
     }
 
     while (!has_touched_down(&s) && s.t < 60.0) {
@@ -17,7 +17,7 @@ void run_landing(State start, const Gains *k, const Params *p, FILE *log, Result
         clamp_thrust(&u, p);
         s = step_rk4(s, u, *p);
         if (log != NULL){
-            fprintf(log, "%f, %f, %f, %f, %f/n", s.t, s.z, s.vz, u.Tz, s.x);
+            fprintf(log, "%f,%f,%f,%f,%f,%f\n", s.t, s.z, s.vz, u.Tz, s.x, u.Tx);
         }
     }
 

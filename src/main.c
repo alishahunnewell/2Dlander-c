@@ -155,6 +155,19 @@ int main(void)
         printf("worst failure: run %d, touchdown vz = %.2f m/s\n", worst_i, worst_vz);
         printf("  start: z=%.1f  vz=%.2f  m=%.1f  x=%.1f  vx=%.2f\n",
                worst_start.z, worst_start.vz, worst_start.m, worst_start.x, worst_start.vx);
+
+        //fly the worst run again, this time saving a csv
+        FILE *wf = fopen("output/worst.csv", "w");
+        if (wf == NULL) {
+            printf("could not open output/worst.csv\n");
+            return 1;
+        }
+        Result wr;
+        run_landing(worst_start, &mc_gains, &lp, wf, &wr);
+        fclose(wf);
+
+        printf("worst rerun: ");
+        print_result(&wr);
     }
 
     return 0;
