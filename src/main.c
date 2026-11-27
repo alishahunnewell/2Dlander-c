@@ -7,6 +7,7 @@
 #include "controller.h"
 #include "metrics.h"
 #include "sim.h"
+#include "rng.h"
 
 int main(void)
 {
@@ -84,6 +85,77 @@ int main(void)
         printf("run %d: ", i);
         print_result(&r);
     }
-    
+
+
+    //section 3: monte carlo, random starts with baseline gains 
+    //setup: seeded generator, run count, tallies 
+
+    Rng rng;
+    rng_seed(&rng, 42);
+
+
+    int N = 1000;
+    int n_landed = 0;
+    int n_vz = 0;
+    int n_vx = 0;
+    int n_x = 0;
+    int n_timeout = 0;
+
+    Gains mc_gains = {0.5, 1.4, 1.0, 2.0};
+
+    //worst failure tracker, declared here so it survives loo[]
+    double worst_vz = 0.0;
+    int worst_i = -1;       //means no failure has been found yet
+    State worst_start = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+
+    //one pass = one random randing 
+    for (int i = 0; i< N; i++){
+        //random starting state, ranges from the paper table
+        State start; 
+        start.t = 0.0;
+        start.z = rng_range(&rng, 80.0, 120.0);
+        start.vz = rng_range(&rng, -10.0, 0.0);
+        start.m = rng_range(&rng, 900.0, 1100.0);
+        start.x = rng_range(&rng, -40.0, 40.0);
+        start.vx = rng_range(&rng, -3.0, 3.0);
+
+        //fly it with no csv then tally verdict w 
+        Result r; 
+        run_landing(start, &mc_gains, &lp, NULL, &r);
+
+        if (r.landed){
+            n_landed++;
+        }   else if (r.reason == REASON_VZ) {
+            n_vz++;
+        }   else if (r.reason == REASON_VX) {
+            n_vx++;
+        }   else if (r.reason == REASON_X) {
+            n_x++;
+        }   else {
+            n_timeout++;
+        }
+
+        //remember the failed run with the fastest touchdown
+        if (!r.landed && fabs(r.vz_touch) > worst_vz) {
+            worst_vz = fabs(r.vz_touch);
+            worst_i = i;
+            worst_start = start;
+        }
+    }
+
+    //report section 3 monte carlo 
+    printf("monte carlo: N=%d, seed=42\n", N);
+    printf("  landed:           %d (%.1f%%)\n", n_landed, 100.0 * n_landed / N);
+    printf("  vertical speed:   %d\n", n_vz);
+    printf("  horizontal speed: %d\n", n_vx);
+    printf("  missed pad:       %d\n", n_x);
+    printf("  timeout:          %d\n", n_timeout);
+
+    if (worst_i >= 0) {
+        printf("worst failure: run %d, touchdown vz = %.2f m/s\n", worst_i, worst_vz);
+        printf("  start: z=%.1f  vz=%.2f  m=%.1f  x=%.1f  vx=%.2f\n",
+               worst_start.z, worst_start.vz, worst_start.m, worst_start.x, worst_start.vx);
+    }
+
     return 0;
 }
